@@ -1,29 +1,26 @@
-import react from 'react';
 import { Component } from 'react';
 import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <h1>Hello From React !</h1>
-//     </div>
-//   );
-// }
-
+import Navbar from './components/layouts/Navbar';
+import Users from './components/users/Users';
+import axios from 'axios';
 class App extends Component {
-  render(){
-    const name ="Govardhan Aaleswara";
-    const loading = false;
-    const showName = true;
-    // if(loading){
-    //   return(
-    //     <h2>Loading...</h2>
-    //   )
-    // }
-    return(
+  state = {
+    users: [],
+    loading: false
+  }
+  async componentDidMount() {
+    this.setState({ loading: true });
+    const res = await axios.get(`https://api.github.com/users?client_id=${process.env.REACT_APP_Client_ID}&client_secret=${process.env.REACT_APP_Client_Secrets}`);
+    // console.log(res.request.responseURL)
+    this.setState({ users: res.data, loading: false });
+  }
+  render() {
+    return (
       <div className="App">
-       <h1>My App</h1>
-       {loading?<h2>Loading...</h2>:<h1>Hello {showName && name}</h1>}
+        <Navbar />
+        <div className="container">
+          <Users loading={this.state.loading} users={this.state.users} />
+        </div>
       </div>
     );
   }
